@@ -1,9 +1,9 @@
 import { ActionIcon, Burger } from "@mantine/core";
-import { Chip } from "@mantine/core";
 import styled from "styled-components";
 import { SearchRounded } from "@mui/icons-material";
-import { ChipsFilterBar } from "./ChipsFilterBar";
-import { HeroProduct } from "./HeroProduct";
+import { ChipsFilterBar } from "./components/ChipsFilterBar";
+import { HeroProduct } from "./components/HeroProduct";
+import { AppBar } from "./components/AppBar";
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
       <PageTitle />
       <ChipsFilterBar />
       <HeroProduct /> <div className="ProductPreview"></div>
+      <ExampleMeals />
       <AppBar />
     </AppStyles>
   );
@@ -20,6 +21,7 @@ const AppStyles = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+  min-height: 100vh;
 `;
 
 // https://mantine.dev/core/action-icon/
@@ -40,36 +42,35 @@ const NavBarStyles = styled.div`
 `;
 
 function PageTitle({}) {
-  return <div className="PageTitle"></div>;
+  return (
+    <PageTitleStyles>
+      <div className="PageTitle">Delicious Salads</div>
+      <div className="PageTite">We make fresh and healthy food</div>
+    </PageTitleStyles>
+  );
 }
+const PageTitleStyles = styled.div``;
 function ExampleMeals({}) {
   return (
     <ExampleMealsStyles>
-      <img src="" alt="" className="ExampleMeals" />
-      <div className="ExampleMeals"></div>
-      <button className="ExampleMeals">➕</button>
-      <div className="ExampleMeals"></div>
-      <button className="ExampleMeals">➕</button>
-      <img src="" alt="" className="ExampleMeals" />
+      <div className="ExampleMeals">
+        <img src="https://picsum.photos/100/100" alt="" />
+        <div>Mixed Salad</div>
+        <div>Mixed Vegetables</div>
+        <button>➕</button>
+        <div>Quinoa Salad</div>
+        <div>Spicy with garlic</div>
+        <button>➕</button>
+        <img src="https://picsum.photos/100/100" alt="" />
+      </div>
     </ExampleMealsStyles>
   );
 }
 
-const ExampleMealsStyles = styled.div``;
-function AppBar({}) {
-  return (
-    <AppBarStyles>
-      <div className="AppBar">
-        <Chip>
-          <Chip>🏚</Chip>
-          <Chip>📁</Chip>
-          <Chip>💬</Chip>
-          <Chip>⚪</Chip>
-        </Chip>
-      </div>
-      ;
-    </AppBarStyles>
-  );
-}
-
-const AppBarStyles = styled.div``;
+const ExampleMealsStyles = styled.div`
+  .ExampleMeals {
+    display: flex;
+    align-content: stretch;
+    align-items: flex-end;
+  }
+`;
