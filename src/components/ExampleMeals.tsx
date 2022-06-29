@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { CircularProgress } from "@mui/material";
 import { StatusType, useQuery } from "./useQuery";
-import { useCartItems } from "../utils/store";
+import { CartItemType, useCartItems } from "../utils/store";
+import { useState } from "react";
 
 const EXAMPLE_POST = {
   userId: 1,
@@ -20,11 +21,12 @@ type DataType = typeof EXAMPLE_POST;
 // react practice...
 // practice using useQuery + .map to render lists in different components
 // Javascript30 https://www.youtube.com/watch?v=VuN8qwZoego&list=PLu8EoSxDXHP6CGK4YVJhL_VWetA865GOH
-
 export function ExampleMeals({}) {
   const { data: menuItems, status } = useQuery(
     "https://jsonplaceholder.typicode.com/posts"
   ) as unknown as { data: DataType[]; status: StatusType };
+  const menuItemsCleaned =
+    menuItems && menuItems.slice(0, 3).map((item) => ({ ...item }));
 
   return (
     <ExampleMealsStyles>
@@ -32,37 +34,63 @@ export function ExampleMeals({}) {
         <CircularProgress />
       ) : (
         <div className="ExampleMeals">
-          {menuItems &&
-            menuItems
-              .slice(0, 3)
-              .map(({ id, title }) => (
-                <MenuItem title={title} id={id} key={id} />
-              ))}
+          {menuItemsCleaned.map(({ id, title }) => (
+            <MenuItem title={title} id={id} key={id} />
+          ))}
         </div>
       )}
     </ExampleMealsStyles>
   );
 }
 type MenuItemProps = { title: string; id: number };
+
 function MenuItem({ title, id }: MenuItemProps) {
   const [cartItems, setCartItems] = useCartItems();
-  function addToCart() {
-    const newCartItem = { title: title };
 
-    const newCartItems = [...cartItems, newCartItem];
+  function addToCart() {
+    // TODO what do we want to happen instead
+    const newCartItem: CartItemType = {
+      quantity: 1,
+      title: title,
+      price: randUpTo(200),
+      imgUrl: "https://picsum.photos/100/100",
+    };
+
+    // item is already in cart if cartItems includes one with the same title
+    const isItemAlreadyInCart = cartItems.find((item) => item.title === title);
+
+    const newCartItems = isItemAlreadyInCart
+      ? // just update the quanity of that one
+        cartItems.map((item) => {
+          // if this is the matching cart item, add 1 to its quantity
+          if (item.title === title) {
+            return { ...item, quantity: item.quantity + 1 };
+          }
+          // otherwise, leave it alone
+          return item;
+        })
+      : // add it to the end of the array
+        [...cartItems, newCartItem];
     setCartItems(newCartItems);
+
     // setCartItems((prevState)=>[...prevState,newCartItem]);
   }
+
   return (
-    <>
+    <MenuItemStyles>
       <img src={`https://picsum.photos/${id}/100`} alt="" />
       <div>{title}</div>
       <div>Mixed Vegetables</div>
       <button onClick={addToCart}>➕</button>
-    </>
+    </MenuItemStyles>
   );
 }
 
+function randUpTo(max) {
+  return Math.ceil(Math.random() * max);
+}
+
+const MenuItemStyles = styled.div``;
 const ExampleMealsStyles = styled.div`
   .ExampleMeals {
     display: flex;

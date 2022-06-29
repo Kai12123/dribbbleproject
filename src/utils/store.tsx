@@ -1,7 +1,15 @@
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { SetStateAction } from "react";
-const cartItemsAtom = atom([]);
-type CartItemType = { title: string };
+
+const cartItemsAtom = atomWithStorage("cartItemsAtom", []);
+export type CartItemType = {
+  quantity: number;
+  title: string;
+  price: number;
+  imgUrl: string;
+};
+
 export function useCartItems(): [
   CartItemType[],
   (update: SetStateAction<CartItemType[]>) => void
